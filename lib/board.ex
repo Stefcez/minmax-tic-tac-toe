@@ -16,21 +16,15 @@ defmodule Board do
     cols = columns(board)
     diags = diagonals(board)
 
-    # Create a list of lists
     Enum.concat([rows, cols, diags])
-    # If none return the winner return no_winner
     |> Enum.find_value(&winner_row?/1) || :no_winner
   end
 
-  # This only gets called when the param is a list with 3 of the same elements
   defp winner_row?([a, a, a]) when a != :empty, do: {:winner, a}
-  # Default call when not a list with 3 of the same elements
   defp winner_row?(_), do: nil
 
-  # Enum.zip gets the value of each i and creates a tuple with it, thus getting all the columns
   defp columns(board), do: Enum.zip(board) |> Enum.map(&Tuple.to_list/1)
 
-  # Hardcoded diagonals
   defp diagonals(board) do
     [
       [Enum.at(Enum.at(board, 0), 0), Enum.at(Enum.at(board, 1), 1), Enum.at(Enum.at(board, 2), 2)],
