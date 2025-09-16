@@ -24,30 +24,30 @@ defmodule Game do
   end
 
   def play(board, :x) do
-    possible_moves = Board.get_possible_moves(board)
+    {{i, j}, _score} = MinMax.best_move(board, :x)
+    board = Board.place(board, i, j, :x)
 
-    if possible_moves == [] do
-      IO.puts("Game over! Draw")
-    else
-      {{i, j}, _score} = MinMax.best_move(board, :x)
-      board = Board.place(board, i, j, :x)
+    Board.print_board(board)
 
-      Board.print_board(board)
-
-      next_turn(board, :x)
-    end
+    next_turn(board, :x)
   end
 
   def next_player(:x), do: :o
   def next_player(:o), do: :x
 
   defp next_turn(board, crr_player) do
+    possible_moves = Board.get_possible_moves(board)
+
     case Board.winner(board) do
       {:winner, player} ->
         IO.puts("Congratulations player #{player}, you won!")
 
       :no_winner ->
-        play(board, next_player(crr_player))
+        if possible_moves == [] do
+          IO.puts("What a shame, it's a draw!")
+        else
+          play(board, next_player(crr_player))
+        end
     end
   end
 end
