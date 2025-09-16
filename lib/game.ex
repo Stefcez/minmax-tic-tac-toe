@@ -5,17 +5,27 @@ defmodule Game do
   end
 
   def play(board, crr_player \\ :x) do
-    possible_moves = Board.get_possible_moves(board)
-    cond do
-      length(possible_moves) == 0 ->
-        Board.winner(board)
+    case Board.winner(board) do
+      {:winner, player} ->
+        IO.puts("Winner: #{player}")
+        {:winner, player}
 
-      true ->
-        {i, j} = hd(possible_moves)
-        board = Board.place(board, i, j, crr_player)
+      :no_winner ->
+        possible_moves = Board.get_possible_moves(board)
 
-        next_player = if crr_player == :x, do: :o, else: :x
-        play(board, next_player)
+        if possible_moves == [] do
+          IO.puts("Game over! Draw")
+        else
+          {{i, j}, _score} = MinMax.best_move(board, crr_player)
+          board = Board.place(board, i, j, crr_player)
+
+          Board.print_board(board)
+
+          play(board, next_player(crr_player))
+        end
     end
   end
+
+  def next_player(:x), do: :o
+  def next_player(:o), do: :x
 end

@@ -1,18 +1,41 @@
 defmodule MinMax do
-  @moduledoc """
-  Documentation for `MinMax`.
-  """
+  def best_move(board, player) do
+    Board.get_possible_moves(board)
+    |> Enum.map(fn {i, j} ->
+      new_board = Board.place(board, i, j, player)
+      score = get_best_move(new_board, player, Game.next_player(player))
+      {{i, j}, score}
+    end)
+    |> Enum.max_by(fn {_move, score} -> score end)
+  end
 
-  @doc """
-  Hello world.
+  defp get_best_move(board, target_player, crr_player) do
+    case Board.winner(board) do
+      {:winner, ^target_player} ->
+        1
 
-  ## Examples
+      {:winner, _other} ->
+        -1
 
-      iex> MinMax.hello()
-      :world
+      :no_winner ->
+        possible_moves = Board.get_possible_moves(board)
 
-  """
-  def hello do
-    :world
+        if possible_moves == [] do
+          # draw
+          0
+        else
+          scores =
+            Enum.map(possible_moves, fn {i, j} ->
+              new_board = Board.place(board, i, j, crr_player)
+              get_best_move(new_board, target_player, Game.next_player(crr_player))
+            end)
+
+          if crr_player == target_player do
+            Enum.max(scores)
+          else
+            Enum.min(scores)
+          end
+        end
+    end
   end
 end
