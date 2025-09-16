@@ -12,6 +12,10 @@ defmodule Board do
     end)
   end
 
+  def winner?(board) do
+    winner(board) != :no_winner
+  end
+
   def winner(board) do
     rows = board
     cols = columns(board)
@@ -27,6 +31,10 @@ defmodule Board do
         cell == :n do
       {i, j}
     end
+  end
+
+  def empty_cell?(board, [row, col]) do
+    Enum.at(Enum.at(board, row), col) == :n
   end
 
   def print_board(board) do
