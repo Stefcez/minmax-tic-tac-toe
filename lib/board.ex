@@ -48,17 +48,20 @@ defmodule Board do
   defp columns(board), do: Enum.zip(board) |> Enum.map(&Tuple.to_list/1)
 
   defp diagonals(board) do
+    diagonal = get_diagonal(board)
+
+    rev_board = Enum.reverse(board)
+    rev_diagonal = get_diagonal(rev_board)
+
     [
-      [
-        Enum.at(Enum.at(board, 0), 0),
-        Enum.at(Enum.at(board, 1), 1),
-        Enum.at(Enum.at(board, 2), 2)
-      ],
-      [
-        Enum.at(Enum.at(board, 0), 2),
-        Enum.at(Enum.at(board, 1), 1),
-        Enum.at(Enum.at(board, 2), 0)
-      ]
+      diagonal,
+      rev_diagonal
     ]
+  end
+
+  defp get_diagonal(board) do
+    board
+    |> Enum.with_index()
+    |> Enum.map(fn {row, index} -> Enum.at(row, index) end)
   end
 end
