@@ -1,12 +1,18 @@
 defmodule MinMax do
   def best_move(board, player) do
-    Board.get_possible_moves(board)
-    |> Enum.map(fn {i, j} ->
-      new_board = Board.place(board, i, j, player)
-      score = get_best_move(new_board, player, Game.next_player(player))
-      {{i, j}, score}
-    end)
-    |> Enum.max_by(fn {_move, score} -> score end)
+    moves_with_scores =
+      Board.get_possible_moves(board)
+      |> Enum.map(fn {i, j} ->
+        new_board = Board.place(board, i, j, player)
+        score = get_best_move(new_board, player, Game.next_player(player))
+        {{i, j}, score}
+      end)
+
+    max_score = Enum.max_by(moves_with_scores, fn {_move, score} -> score end) |> elem(1)
+
+    best_moves = Enum.filter(moves_with_scores, fn {_move, score} -> score == max_score end)
+
+    Enum.random(best_moves)
   end
 
   defp get_best_move(board, target_player, crr_player) do

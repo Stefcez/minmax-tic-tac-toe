@@ -28,6 +28,7 @@ defmodule Game do
   end
 
   defp human_move(board) do
+    IO.puts("It's your turn!")
     row = IO.gets("Enter row (starting at 0): ") |> String.trim() |> String.to_integer()
     column = IO.gets("Enter column (starting at 0): ") |> String.trim() |> String.to_integer()
 
