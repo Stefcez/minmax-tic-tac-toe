@@ -39,7 +39,7 @@ defmodule Board do
 
   def print_board(board) do
     Enum.each(board, &IO.inspect/1)
-    IO.puts("\n")
+    IO.puts("")
   end
 
   defp winner_row?([a, a, a]) when a != :n, do: {:winner, a}

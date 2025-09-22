@@ -1,7 +1,9 @@
 defmodule Game do
   def start() do
     board = Board.create()
-    play(board, :x)
+    Board.print_board(board)
+    starter_move = choose_starting_player()
+    play(board, starter_move)
   end
 
   def play(board, :o) do
@@ -49,5 +51,16 @@ defmodule Game do
           play(board, next_player(crr_player))
         end
     end
+  end
+
+  defp choose_starting_player() do
+    crr_player = Enum.random([:x, :o])
+
+    case crr_player do
+      :x -> IO.puts("AI will begin!")
+      :o -> IO.puts("You can start!")
+    end
+
+    crr_player
   end
 end
