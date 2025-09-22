@@ -2,36 +2,41 @@ defmodule Game do
   def start() do
     board = Board.create()
     Board.print_board(board)
+
     starter_move = choose_starting_player()
+
     play(board, starter_move)
   end
 
-  def play(board, :o) do
-    row = IO.gets("Enter row (starting at 0): ") |> String.trim() |> String.to_integer()
-    column = IO.gets("Enter column (starting at 0): ") |> String.trim() |> String.to_integer()
-    input = [row, column]
-
-    if Board.empty_cell?(board, input) do
-      board = Board.place(board, Enum.at(input, 0), Enum.at(input, 1), :o)
-
-      if Board.winner?(board) do
-        IO.puts("Congratulation player! You won!")
-      else
-        next_turn(board, :o)
+  def play(board, crr_player) do
+    {i, j} =
+      case crr_player do
+        :x -> ai_move(board, crr_player)
+        :o -> human_move(board)
       end
-    else
-      IO.puts("You can't place there!")
-      play(board, :o)
-    end
-  end
 
-  def play(board, :x) do
-    {{i, j}, _score} = MinMax.best_move(board, :x)
-    board = Board.place(board, i, j, :x)
-
+    board = Board.place(board, i, j, crr_player)
     Board.print_board(board)
 
-    next_turn(board, :x)
+    next_turn(board, crr_player)
+  end
+
+  defp ai_move(board, crr_player) do
+    {{i, j}, _score} = MinMax.best_move(board, crr_player)
+    IO.puts("AI places #{crr_player} at indexes: [#{i}, #{j}]")
+    {i, j}
+  end
+
+  defp human_move(board) do
+    row = IO.gets("Enter row (starting at 0): ") |> String.trim() |> String.to_integer()
+    column = IO.gets("Enter column (starting at 0): ") |> String.trim() |> String.to_integer()
+
+    if Board.empty_cell?(board, [row, column]) do
+      {row, column}
+    else
+      IO.puts("You can't place there!")
+      human_move(board)
+    end
   end
 
   def next_player(:x), do: :o
