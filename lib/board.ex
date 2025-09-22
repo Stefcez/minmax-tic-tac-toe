@@ -1,9 +1,9 @@
 defmodule Board do
   def create(),
     do: [
-      [:n, :n, :n],
-      [:n, :n, :n],
-      [:n, :n, :n]
+      [nil, nil, nil],
+      [nil, nil, nil],
+      [nil, nil, nil]
     ]
 
   def place(board, posX, posY, value) do
@@ -28,13 +28,13 @@ defmodule Board do
   def get_possible_moves(board) do
     for {row, i} <- Enum.with_index(board),
         {cell, j} <- Enum.with_index(row),
-        cell == :n do
+        cell == nil do
       {i, j}
     end
   end
 
   def empty_cell?(board, [row, col]) do
-    Enum.at(Enum.at(board, row), col) == :n
+    Enum.at(Enum.at(board, row), col) == nil
   end
 
   def print_board(board) do
@@ -42,7 +42,7 @@ defmodule Board do
     IO.puts("")
   end
 
-  defp winner_row?([a, a, a]) when a != :n, do: {:winner, a}
+  defp winner_row?([a, a, a]) when a != nil, do: {:winner, a}
   defp winner_row?(_), do: nil
 
   defp columns(board), do: Enum.zip(board) |> Enum.map(&Tuple.to_list/1)
