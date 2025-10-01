@@ -1,6 +1,10 @@
 defmodule Game do
   @players [:x, :o]
-  @roles %{x: :human, o: :human}
+
+  def roles() do
+    [p1, p2] = @players
+    %{p1 => :human, p2 => :ai}
+  end
 
   def start() do
     board = Board.create()
@@ -15,7 +19,7 @@ defmodule Game do
     # Both cases return a tuple with the row and column so extract each to a variable
     # See which player is currently playing
     {i, j} =
-      case Map.fetch!(@roles, crr_player) do
+      case Map.fetch!(roles(), crr_player) do
         :ai -> ai_move(board, crr_player)
         :human -> human_move(board)
       end
@@ -111,7 +115,7 @@ defmodule Game do
   defp choose_starting_player() do
     # Choose a random player to begin
     crr_player = Enum.random(@players)
-    role = Map.fetch!(@roles, crr_player)
+    role = Map.fetch!(roles(), crr_player)
 
     # Print to the console who will begin
     case role do
