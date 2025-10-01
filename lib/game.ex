@@ -38,9 +38,7 @@ defmodule Game do
     row = IO.gets("Enter row (starting at 0): ") |> sanitize_input()
     column = IO.gets("Enter column (starting at 0): ") |> sanitize_input()
 
-    if(
-      row != nil && column != nil && row < length(board) && column < length(Enum.at(board, row))
-    ) do
+    if(valid_input?(board, row, column)) do
       pos = {row, column}
       # Empty cell expects a list, so put row and column in a list
       if Board.empty_cell?(board, pos) && row < length(board) && column < length(board) do
@@ -58,6 +56,14 @@ defmodule Game do
       Board.print_board(board)
       human_move(board)
     end
+  end
+
+  defp valid_input?(board, row, column) do
+    valid_input?(row, board) && valid_input?(column, Enum.at(board, row))
+  end
+
+  defp valid_input?(input, list_to_check) do
+    input != nil && is_list(list_to_check) && input < length(list_to_check)
   end
 
   defp sanitize_input(input) do
