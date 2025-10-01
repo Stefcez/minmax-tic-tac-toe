@@ -1,4 +1,7 @@
 defmodule Game do
+  @players [:x, :o]
+  @roles %{x: :human, o: :human}
+
   def start() do
     board = Board.create()
     Board.print_board(board)
@@ -12,9 +15,9 @@ defmodule Game do
     # Both cases return a tuple with the row and column so extract each to a variable
     # See which player is currently playing
     {i, j} =
-      case crr_player do
-        :x -> ai_move(board, crr_player)
-        :o -> human_move(board)
+      case Map.fetch!(@roles, crr_player) do
+        :ai -> ai_move(board, crr_player)
+        :human -> human_move(board)
       end
 
     board = Board.place(board, i, j, crr_player)
@@ -76,10 +79,14 @@ defmodule Game do
     end
   end
 
-  # Flip the player, if param is :x it will enter the next_player :x
-  # If param is :o it will enter the next_player :o
-  def next_player(:x), do: :o
-  def next_player(:o), do: :x
+  # Flip the player
+  def next_player(player) do
+    [p1, p2] = @players
+
+    if player == p1,
+      do: p2,
+      else: p1
+  end
 
   defp next_turn(board, crr_player) do
     # Get all possible moves
@@ -103,12 +110,13 @@ defmodule Game do
 
   defp choose_starting_player() do
     # Choose a random player to begin
-    crr_player = Enum.random([:x, :o])
+    crr_player = Enum.random(@players)
+    role = Map.fetch!(@roles, crr_player)
 
     # Print to the console who will begin
-    case crr_player do
-      :x -> IO.puts("AI will begin!")
-      :o -> IO.puts("You can start!")
+    case role do
+      :ai -> IO.puts("AI will begin!")
+      :human -> IO.puts("You can start!")
     end
 
     # Return the starting player to start the game
