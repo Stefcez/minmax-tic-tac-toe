@@ -1,10 +1,12 @@
 defmodule Board do
+  @empty_cell nil
+
   # Create an empty playing field
   def create(),
     do: [
-      [nil, nil, nil],
-      [nil, nil, nil],
-      [nil, nil, nil]
+      [@empty_cell, @empty_cell, @empty_cell],
+      [@empty_cell, @empty_cell, @empty_cell],
+      [@empty_cell, @empty_cell, @empty_cell]
     ]
 
   def place(board, posX, posY, value) do
@@ -35,14 +37,14 @@ defmodule Board do
     # For each element that is empty put it as a tuple in a list to get all possible moves
     for {row, i} <- Enum.with_index(board),
         {cell, j} <- Enum.with_index(row),
-        cell == nil do
+        cell == @empty_cell do
       {i, j}
     end
   end
 
   def empty_cell?(board, {row, col}) do
     # Return true or false based on if the given tuple of position is empty
-    Enum.at(Enum.at(board, row), col) == nil
+    Enum.at(Enum.at(board, row), col) == @empty_cell
   end
 
   def print_board(board) do
@@ -53,7 +55,7 @@ defmodule Board do
   end
 
   # If a list is given with 3 of the same element it will enter this function
-  defp winner_row?([a, a, a]) when a != nil, do: {:winner, a}
+  defp winner_row?([a, a, a]) when a != @empty_cell, do: {:winner, a}
 
   # If there is just a param given but not a list containing 3 of the same elements, it will enter this function
   defp winner_row?(_), do: nil
