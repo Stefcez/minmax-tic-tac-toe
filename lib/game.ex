@@ -1,10 +1,11 @@
 defmodule Game do
-  @players [:x, :o]
+  # Define constants here for easy access
+  # Player symbol must be a list of 2 atoms for the game, but can be changed to i.e. [:l, :h]
+  @player_symbols [:x, :o]
 
-  def roles() do
-    [p1, p2] = @players
-    %{p1 => :human, p2 => :ai}
-  end
+  # Can be changed to both human, ai, or any combination of the 2
+  @player1 :human
+  @player2 :ai
 
   def start() do
     board = Board.create()
@@ -28,6 +29,11 @@ defmodule Game do
     Board.print_board(board)
 
     next_turn(board, crr_player)
+  end
+
+  def roles() do
+    [p1, p2] = @player_symbols
+    %{p1 => @player1, p2 => @player2}
   end
 
   defp ai_move(board, crr_player) do
@@ -85,7 +91,7 @@ defmodule Game do
 
   # Flip the player
   def next_player(player) do
-    [p1, p2] = @players
+    [p1, p2] = @player_symbols
 
     if player == p1,
       do: p2,
@@ -114,7 +120,7 @@ defmodule Game do
 
   defp choose_starting_player() do
     # Choose a random player to begin
-    crr_player = Enum.random(@players)
+    crr_player = Enum.random(@player_symbols)
     role = Map.fetch!(roles(), crr_player)
 
     # Print to the console who will begin
